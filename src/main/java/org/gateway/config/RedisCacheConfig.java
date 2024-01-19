@@ -1,4 +1,4 @@
-package org.inventum.unifyng.apigateway.config;
+package org.gateway.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

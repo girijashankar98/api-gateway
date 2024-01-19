@@ -1,8 +1,8 @@
-package org.inventum.unifyng.apigateway.filters;
+package org.gateway.filters;
 
 import lombok.extern.slf4j.Slf4j;
-import org.inventum.unifyng.apigateway.util.HeaderValidation;
-import org.inventum.unifyng.apigateway.util.TokenUtil;
+import org.gateway.util.HeaderValidation;
+import org.gateway.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;

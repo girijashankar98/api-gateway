@@ -1,12 +1,9 @@
-package org.inventum.unifyng.apigateway.util;
+package org.gateway.util;
 
 import lombok.extern.slf4j.Slf4j;
-import org.inventum.unifyng.apigateway.tenant.TenanApiConfigRepo;
-import org.inventum.unifyng.apigateway.tenant.TenantApiConfig;
+import org.gateway.tenant.TenanApiConfigRepo;
+import org.gateway.tenant.TenantApiConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

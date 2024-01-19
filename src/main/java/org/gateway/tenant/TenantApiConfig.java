@@ -1,4 +1,4 @@
-package org.inventum.unifyng.apigateway.tenant;
+package org.gateway.tenant;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
