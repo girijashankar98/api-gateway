@@ -1,0 +1,55 @@
+server:
+  port: 7001
+  netty:
+    connection-timeout: 5s
+  shutdown: graceful
+
+keycloak:
+  url: https://idp.localhost.co/auth/
+  clientId: unifyng-captive
+  clientSecret: polar-keycloak-secret
+
+spring:
+  webflux:
+    base-path: /apigateway
+  data:
+    mongodb:
+      host: localhost
+      port: 27019
+      database: demo
+  redis:
+    connect-timeout: 5s
+    host: localhost
+    port: 6379
+    timeout: 500ms
+    password: password
+  cache:
+    redis:
+      time-to-live: 5m
+
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 5s
+        pool:
+          type: elastic
+          max-idle-time: 15s
+          max-life-time: 60s
+      routes:
+        - id: backend-service
+          uri: ${BACKEND-SERVICE:http://localhost:8002}/
+          predicates:
+            - Path=${spring.webflux.base-path}/backend/**
+          filters:
+            - StripBasePath=1
+            - RewritePath=/backend(?<segment>/?.*), $\{segment}
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    configUrl: /apigateway/v3/api-docs/swagger-config
+    url: /apigateway/v3/api-docs
+    urls:
+      - name: backend-service
+        url: ${BACKEND-SERVICE-SWAGGER:http://localhost:8002}/backend/v3/api-docs
