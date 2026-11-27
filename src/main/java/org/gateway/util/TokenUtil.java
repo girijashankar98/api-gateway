@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 @CacheConfig
 public class TokenUtil
 {
-    Keycloak keycloak;
     @Value("${keycloak.clientId}")
     String kclientId;
     @Value("${keycloak.clientSecret}")
@@ -26,11 +25,10 @@ public class TokenUtil
     @Cacheable(cacheNames = "ApiGatewayToken", key = "#tenantId")
     public String generateTokenForTenant(String tenantId)
     {
-        if (tenantId.equals(null))
+        if (tenantId == null)
         { return null; }
 
-
-        keycloak = KeycloakBuilder.builder()
+        Keycloak keycloak = KeycloakBuilder.builder()
                 .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                 .clientId(kclientId.trim())
                 .clientSecret(kclientSecret.trim())
@@ -39,11 +37,6 @@ public class TokenUtil
                 .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
                 .build();
 
-        log.info("KeyCloak send Parameter {}",keycloak);
-        String jwttoken = keycloak.tokenManager().grantToken().getToken();
-
-
-        log.info(jwttoken);
-        return jwttoken;
+        return keycloak.tokenManager().grantToken().getToken();
     }
 }

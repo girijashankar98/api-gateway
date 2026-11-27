@@ -7,7 +7,7 @@ server:
 keycloak:
   url: https://idp.localhost.co/auth/
   clientId: unifyng-captive
-  clientSecret: polar-keycloak-secret
+  clientSecret: ${KEYCLOAK_CLIENT_SECRET}
 
 spring:
   webflux:
@@ -22,7 +22,7 @@ spring:
     host: localhost
     port: 6379
     timeout: 500ms
-    password: password
+    password: ${REDIS_PASSWORD:}
   cache:
     redis:
       time-to-live: 5m
