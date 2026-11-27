@@ -37,7 +37,7 @@ public class StripBasePathGatewayFilterFactory extends AbstractGatewayFilterFact
             ServerHttpRequest request = exchange.getRequest();
             String[] hostDomain = UriComponentsBuilder.fromUri(exchange.getRequest().getURI()).build().getHost().split("\\.");
 
-            if (!request.getHeaders().containsKey(KEY_REQUIRED_HEADER) && !request.getHeaders().containsKey(SECRET_REQUIRED_HEADER)) {
+            if (!request.getHeaders().containsKey(KEY_REQUIRED_HEADER) || !request.getHeaders().containsKey(SECRET_REQUIRED_HEADER)) {
                 log.debug("Requested Headers is missing");
                 exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
                 return exchange.getResponse().setComplete();
@@ -48,12 +48,19 @@ public class StripBasePathGatewayFilterFactory extends AbstractGatewayFilterFact
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
-            if (validationStatus.equals("OK")){
-                ServerHttpRequest modifiedRequest = request.mutate()
-                        .header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + tokenUtil.generateTokenForTenant(hostDomain[0]))
-                        .build();
-                exchange = exchange.mutate().request(modifiedRequest).build();
+            if (!"OK".equals(validationStatus)) {
+                exchange.getResponse().setStatusCode("UNAUTHORIZED".equals(validationStatus)
+                        ? HttpStatus.UNAUTHORIZED : HttpStatus.BAD_REQUEST);
+                return exchange.getResponse().setComplete();
             }
+            ServerHttpRequest modifiedRequest = request.mutate()
+                    .headers(h -> {
+                        h.remove(KEY_REQUIRED_HEADER);
+                        h.remove(SECRET_REQUIRED_HEADER);
+                        h.set(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + tokenUtil.generateTokenForTenant(hostDomain[0]));
+                    })
+                    .build();
+            exchange = exchange.mutate().request(modifiedRequest).build();
             return chain.filter(exchange.mutate()
                     .request(exchange.getRequest().mutate()
                             .path(exchange.getRequest().getURI().getRawPath().replaceFirst(this.contextPath, ""))

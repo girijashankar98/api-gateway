@@ -50,7 +50,6 @@ public class HeaderValidation {
                     sb.append(String.format("%02x", b));
                 }
                 String hashString = sb.toString();
-                log.debug("Generated hashcode to match : "+hashString +" and fetched hashcode is "+config.get().getHashSecret());
                 if (hashString.equalsIgnoreCase(config.get().getHashSecret())) {
                     log.debug("Authentication successfully done");
                     return "OK";
